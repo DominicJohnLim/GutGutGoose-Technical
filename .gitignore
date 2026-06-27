@@ -1,6 +1,7 @@
 CLAUDE.md
 PLAN.md
 docs/
+.superpowers/
 
 # build inputs & databases — never commit
 data/
@@ -10,3 +11,4 @@ data/results/*
 !data/results/results.json
 !data/results/report.json
 !data/results/fastp.html
+.DS_Store
