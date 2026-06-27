@@ -4,7 +4,7 @@ docs/
 .superpowers/
 
 # build inputs & databases — never commit
-data/
+data/*
 # but DO keep the small served artifacts
 !data/results/
 data/results/*
