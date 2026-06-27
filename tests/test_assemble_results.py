@@ -1,5 +1,5 @@
 import pytest
-from pipeline.assemble_results import parse_abundance, sanity_check
+from pipeline.assemble_results import parse_abundance, sanity_check, parse_unclassified
 
 # realistic MetaPhlAn4 rows: clade, NCBI_tax_id, relative_abundance, additional_species
 REAL_TSV = (
@@ -39,3 +39,17 @@ def test_sanity_check_rejects_bad_sum():
 def test_sanity_check_passes_realistic():
     abundance = [{"species": f"sp{i}", "rel_abundance_pct": 100 / 25} for i in range(25)]
     sanity_check(abundance, pathways=[])  # 25 species summing to 100 -> no raise
+
+def test_parse_unclassified():
+    import tempfile, os
+    tsv = ("#clade_name\tNCBI_tax_id\trelative_abundance\tadditional_species\n"
+           "UNCLASSIFIED\t-1\t7.16\t\n"
+           "k__Bacteria|s__Faecalibacterium_prausnitzii\t2|853\t92.84\t\n")
+    fd, path = tempfile.mkstemp(suffix=".tsv"); os.write(fd, tsv.encode()); os.close(fd)
+    assert parse_unclassified(path) == 7.16
+    os.unlink(path)
+
+def test_sanity_check_passes_with_unclassified_fraction():
+    # 25 species summing to 92.84 + 7.16 unclassified = 100 -> no raise (real MetaPhlAn4 shape)
+    abundance = [{"species": f"sp{i}", "rel_abundance_pct": 92.84 / 25} for i in range(25)]
+    sanity_check(abundance, pathways=[], unclassified_pct=7.16)

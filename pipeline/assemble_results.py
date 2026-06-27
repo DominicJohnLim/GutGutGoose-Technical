@@ -5,10 +5,22 @@ def parse_abundance(path):
     return [{"species": sp, "rel_abundance_pct": rel}
             for sp, rel in parse_species_rows(path)]
 
-def sanity_check(abundance, pathways):
-    total = sum(r["rel_abundance_pct"] for r in abundance)
+def parse_unclassified(path):
+    """MetaPhlAn4 emits an 'UNCLASSIFIED  -1  <pct>' row for reads matching no
+    species marker. relative_abundance is column index 2 (the NCBI id is -1,
+    so first-float parsing would wrongly pick it)."""
+    with open(path) as fh:
+        for line in fh:
+            if line.startswith("UNCLASSIFIED\t"):
+                return float(line.rstrip("\n").split("\t")[2])
+    return 0.0
+
+def sanity_check(abundance, pathways, unclassified_pct=0.0):
+    # MetaPhlAn4 splits the community into classified species + an UNCLASSIFIED
+    # fraction; together they must sum to ~100. A wrong-column parse would break this.
+    total = sum(r["rel_abundance_pct"] for r in abundance) + unclassified_pct
     if not (99.0 <= total <= 101.0):
-        raise ValueError(f"abundance sums to {total:.2f}, expected ~100")
+        raise ValueError(f"species + unclassified = {total:.2f}, expected ~100 (possible parse error)")
     if len(abundance) <= 20:
         raise ValueError(f"only {len(abundance)} species — looks like noise, not a real profile")
 
@@ -21,8 +33,9 @@ def _tool_version(cmd):
 
 def build_results(metaphlan_tsv, sample_acc, source, read_pairs, pathways=None):
     abundance = parse_abundance(metaphlan_tsv)
+    unclassified = parse_unclassified(metaphlan_tsv)
     pathways = pathways or []
-    sanity_check(abundance, pathways)
+    sanity_check(abundance, pathways, unclassified)
     return {
         "provenance": {
             "sample_accession": sample_acc,
@@ -34,6 +47,8 @@ def build_results(metaphlan_tsv, sample_acc, source, read_pairs, pathways=None):
             },
             "generated_at": datetime.date.today().isoformat(),
         },
+        "classified_pct": round(sum(r["rel_abundance_pct"] for r in abundance), 2),
+        "unclassified_pct": round(unclassified, 2),
         "abundance": sorted(abundance, key=lambda r: -r["rel_abundance_pct"]),
         "diversity": diversity_from_metaphlan(metaphlan_tsv),
         "pathways": pathways,

@@ -38,8 +38,8 @@ echo "   human alignment summary:"; tail -1 data/microbe/bowtie2.log
 # --- stage 3: identify taxa (MetaPhlAn4; --db_dir on 4.2.4) ---
 echo ">> stage 3: MetaPhlAn4"
 metaphlan data/microbe/microbe.fastq.gz \
-  --input_type fastq --db_dir data/db/metaphlan \
-  --bowtie2out data/profile/metaphlan.bowtie2.bz2 \
+  --input_type fastq --db_dir data/db/metaphlan --offline \
+  --mapout data/profile/metaphlan.mapout.bz2 \
   --nproc "$THREADS" -o data/profile/metaphlan.tsv
 echo "   species detected: $(grep -c 's__' data/profile/metaphlan.tsv || true)"
 
