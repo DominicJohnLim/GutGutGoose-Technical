@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology — Gut Microbiome Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:#EDE8DD;color:#1E1B16;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+
+  .top{max-width:1120px;margin:0 auto;padding:34px 40px 0}
+  .back{font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.16em;text-transform:uppercase;color:#8A8475;text-decoration:none}
+  .back:hover{color:#2F6E5A}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8475;margin:30px 0 12px}
+  .title{font-family:'Newsreader',serif;font-weight:400;font-size:46px;line-height:1.1;letter-spacing:-0.015em;margin:0 0 14px}
+  .lede{font-family:'Newsreader',serif;font-style:italic;font-size:20px;line-height:1.5;color:#4A453C;margin:0;max-width:62ch}
+  .rule{max-width:1120px;margin:30px auto 0;padding:0 40px}
+  .rule hr{border:none;border-top:1px solid #DED7C7;margin:0}
+
+  .grid{max-width:1120px;margin:0 auto;padding:30px 40px 110px;display:grid;grid-template-columns:210px 1fr;gap:54px;align-items:start}
+  nav.toc{position:sticky;top:34px;align-self:start}
+  nav.toc .lbl{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:#A39C8C;margin-bottom:14px}
+  nav.toc a{display:block;font-family:'Inter';font-size:13.5px;line-height:1.35;color:#8A8475;text-decoration:none;padding:7px 0 7px 12px;border-left:2px solid #DED7C7}
+  nav.toc a:hover{color:#2F6E5A}
+  nav.toc a.active{color:#1E1B16;border-left-color:#2F6E5A;font-weight:500}
+
+  .md{max-width:74ch}
+  .md h1{display:none}
+  .md h2{font-family:'Newsreader',serif;font-weight:500;font-size:24px;line-height:1.25;margin:46px 0 14px;padding-top:30px;border-top:1px solid #E3DCCC;scroll-margin-top:28px;color:#1E1B16}
+  .md h2:first-of-type{margin-top:6px;padding-top:0;border-top:none}
+  .md h3{font-family:'Inter';font-weight:600;font-size:14px;letter-spacing:0.02em;margin:26px 0 8px;color:#3a362e}
+  .md p{font-family:'Inter';font-size:15.5px;line-height:1.78;color:#3a362e;margin:0 0 16px}
+  .md ul,.md ol{padding-left:22px;margin:0 0 16px}
+  .md li{font-family:'Inter';font-size:15.5px;line-height:1.7;color:#3a362e;margin:7px 0}
+  .md strong{color:#1E1B16;font-weight:600}
+  .md em{font-style:italic}
+  .md code{font-family:'Spline Sans Mono',monospace;font-size:13px;background:#E9E3D5;padding:1px 6px;border-radius:5px;color:#5b4a2e}
+  .md a{color:#2F6E5A;text-decoration:underline;text-underline-offset:2px}
+  .md table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13.5px}
+  .md th,.md td{border:1px solid #DED7C7;padding:9px 12px;text-align:left}
+  .md th{background:#EFEADF;font-family:'Inter';font-weight:600}
+  /* references: tighter, two columns, no bullets crammed vertically */
+  .md h2#references + ol{columns:2;column-gap:40px;padding-left:0;list-style-position:inside}
+  .md h2#references + ol li{font-size:12.5px;line-height:1.55;color:#6B6456;break-inside:avoid;margin:0 0 12px}
+
+  @media (max-width:880px){
+    .grid{grid-template-columns:1fr;gap:24px}
+    nav.toc{display:none}
+    .top,.rule,.grid{padding-left:24px;padding-right:24px}
+    .title{font-size:36px}
+    .md h2#references + ol{columns:1}
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="/">&larr; Back to report</a>
+    <div class="eyebrow">GutGutGoose · Technical</div>
+    <h1 class="title">Methodology</h1>
+    <p class="lede">How a real shotgun stool sample becomes a grounded patient report — the pipeline, the modeling, and how the whole thing was validated.</p>
+  </div>
+  <div class="rule"><hr></div>
+  <div class="grid">
+    <nav class="toc" id="toc"><div class="lbl">Contents</div></nav>
+    <div class="md" id="md">Loading…</div>
+  </div>
+
+  <script>
+    function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+    fetch('/methodology.md', {cache:'no-store'})
+      .then(r => r.text())
+      .then(src => {
+        const md = document.getElementById('md');
+        md.innerHTML = marked.parse(src);
+        const toc = document.getElementById('toc');
+        const heads = [...md.querySelectorAll('h2')];
+        heads.forEach(h => {
+          h.id = slug(h.textContent);
+          const a = document.createElement('a');
+          a.href = '#' + h.id;
+          a.textContent = h.textContent.replace(/^\d+\.\s*/, '');
+          toc.appendChild(a);
+        });
+        // scrollspy
+        const links = [...toc.querySelectorAll('a')];
+        const spy = () => {
+          let cur = heads[0];
+          for (const h of heads) { if (h.getBoundingClientRect().top <= 120) cur = h; }
+          links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur.id));
+        };
+        document.addEventListener('scroll', spy, {passive:true}); spy();
+      })
+      .catch(() => { document.getElementById('md').textContent = 'Could not load methodology.md'; });
+  </script>
+</body>
+</html>

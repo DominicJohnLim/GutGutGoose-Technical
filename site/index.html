@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gut Microbiome Report — GutGutGoose</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:#EDE8DD}
+  details summary{list-style:none;cursor:pointer}
+  details summary::-webkit-details-marker{display:none}
+  details[open] .sci-caret{transform:rotate(90deg)}
+  .frow > summary{transition:background .15s ease}
+  .frow > summary:hover{background:rgba(47,110,90,0.045)}
+  .frow[open] > summary{background:rgba(47,110,90,0.05)}
+  .blob-btn{transition:filter .2s ease, transform .2s ease}
+  .blob-btn:hover{filter:brightness(1.06)}
+  .blob-btn:focus-visible{outline:2px solid #1E1B16;outline-offset:3px}
+  button:focus-visible, summary:focus-visible{outline:2px solid #2F6E5A;outline-offset:3px}
+  @keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes goose-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  [data-reveal]{animation:goose-in .55s cubic-bezier(.22,1,.36,1) both}
+  @media (prefers-reduced-motion: reduce){.blob-btn{animation:none !important}[data-reveal]{animation:none !important}}
+  .dc-methodology-link{position:fixed;right:18px;bottom:16px;z-index:60;font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.12em;text-transform:uppercase;color:#8A8475;text-decoration:none;background:#F7F3EA;border:1px solid #DED7C7;border-radius:999px;padding:8px 14px}
+  .dc-methodology-link:hover{color:#2F6E5A;border-color:#2F6E5A}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EDE8DD;color:#1E1B16;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <sc-if value="{{ showProcessing }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed;inset:0;z-index:50;background:#EDE8DD;display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="width:100%;max-width:440px">
+        <div style="font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#8A8475;margin-bottom:26px">Preparing your field guide</div>
+        <div style="font-family:'Newsreader',serif;font-size:30px;line-height:1.25;color:#1E1B16;margin-bottom:34px">Reading the community living in <span style="color:#2F6E5A">{{ activeName }}</span>’s sample…</div>
+        <sc-for list="{{ procLines }}" as="p" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:12px;padding:9px 0;opacity:{{ p.opacity }};transition:opacity .4s ease">
+            <span style="width:8px;height:8px;border-radius:999px;flex:0 0 auto;background:{{ p.dot }}"></span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:13.5px;color:#4A453C">{{ p.text }}</span>
+          </div>
+        </sc-for>
+        <div style="margin-top:30px;height:4px;border-radius:999px;background:#DED7C7;overflow:hidden">
+          <div style="height:100%;border-radius:999px;background:#2F6E5A;width:{{ procPct }}%;transition:width .5s ease"></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showReport }}" hint-placeholder-val="{{ true }}">
+  <div style="max-width:1080px;margin:0 auto;padding:34px 32px 90px">
+
+    <!-- masthead + report selector -->
+    <header style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding-bottom:26px;border-bottom:1px solid #DED7C7;margin-bottom:36px">
+      <div style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8475">GutGutGoose · Field Guide</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-family:'Inter';font-size:12px;color:#8A8475;margin-right:2px">Demo reports</span>
+        <sc-for list="{{ reports }}" as="r" hint-placeholder-count="3">
+          <button onClick="{{ r.onSelect }}" style="cursor:pointer;font-family:'Inter';font-size:13px;font-weight:500;padding:7px 13px;border-radius:999px;border:1px solid {{ r.border }};background:{{ r.bg }};color:{{ r.color }}">{{ r.label }}</button>
+        </sc-for>
+      </div>
+    </header>
+
+    <!-- eyebrow + ribbon -->
+    <div data-reveal>
+      <div style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.18em;text-transform:uppercase;color:#8A8475;margin-bottom:16px">{{ eyebrow }}</div>
+      <div style="background:#F7F3EA;border-radius:18px;padding:22px 22px 18px;box-shadow:0 1px 3px rgba(30,27,22,.05),0 1px 14px rgba(30,27,22,.03)">
+        <div style="display:flex;align-items:center;gap:3px;height:104px;margin-bottom:14px;overflow:hidden">
+          <sc-for list="{{ ribbon }}" as="b" hint-placeholder-count="14">
+            <button class="blob-btn" onClick="{{ b.onClick }}" aria-label="{{ b.aria }}" title="{{ b.aria }}" style="flex:0 0 auto;width:{{ b.w }}%;height:{{ b.h }}px;min-width:5px;border:none;padding:0;border-radius:{{ b.radius }}px;background:{{ b.color }};cursor:{{ b.cursor }};animation:breathe {{ b.dur }}s ease-in-out {{ b.delay }}s infinite"></button>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px 18px;align-items:center">
+          <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+            <span style="display:inline-flex;align-items:center;gap:7px">
+              <span style="width:10px;height:10px;border-radius:3px;background:{{ l.color }}"></span>
+              <span style="font-family:'Inter';font-size:12.5px;color:#4A453C">{{ l.label }}</span>
+            </span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="font-family:'Inter';font-size:13.5px;color:#8A8475;margin-top:11px;padding-left:2px">Each blob is one species — its width is how much of your community it makes up. Tap a labelled one to jump to it.</div>
+    </div>
+
+    <!-- hero headline -->
+    <div data-reveal style="margin-top:40px;margin-bottom:4px">
+      <h1 style="font-family:'Newsreader',serif;font-weight:400;font-size:31px;line-height:1.3;letter-spacing:-0.01em;color:#1E1B16;margin:0;max-width:46ch;text-wrap:pretty">{{ headline }}</h1>
+    </div>
+
+    <!-- findings ledger -->
+    <div data-reveal style="margin-top:34px;background:#F7F3EA;border-radius:16px;box-shadow:0 1px 3px rgba(30,27,22,.05),0 1px 14px rgba(30,27,22,.03);overflow:hidden">
+      <sc-for list="{{ findings }}" as="f" hint-placeholder-count="10">
+        <details id="finding-{{ f.idx }}" class="frow" style="border-bottom:1px solid #E7E0D1;border-left:4px solid {{ f.edge }}">
+          <summary style="list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr 112px 128px 144px 14px;gap:16px;align-items:center;padding:15px 20px">
+            <div style="min-width:0">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+                <span style="width:10px;height:10px;border-radius:999px;flex:0 0 auto;background:{{ f.edge }}"></span>
+                <span style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.01em;color:#6B6456;font-style:{{ f.citStyle }}">{{ f.citation }}</span>
+              </div>
+              <span style="font-family:'Newsreader',serif;font-weight:500;font-size:16.5px;line-height:1.34;color:#1E1B16;text-wrap:pretty">{{ f.claim }}</span>
+            </div>
+            <span style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:14.5px;color:{{ f.valueColor }};text-align:right">{{ f.value }}</span>
+            <span style="display:inline-flex;align-items:center;gap:7px">
+              <span style="width:9px;height:9px;border-radius:999px;flex:0 0 auto;background:{{ f.conf.fill }};border:1.5px solid {{ f.conf.border }}"></span>
+              <span style="font-family:'Inter';font-size:9.5px;font-weight:600;letter-spacing:0.03em;text-transform:uppercase;color:#8A8475;line-height:1.25">{{ f.conf.label }}</span>
+            </span>
+            <span style="display:block">
+              <sc-if value="{{ f.hasRange }}" hint-placeholder-val="{{ false }}">
+                <span style="position:relative;display:block;height:7px;border-radius:999px;background:#E4DDCD">
+                  <span style="position:absolute;top:0;bottom:0;left:{{ f.range.left }}%;width:{{ f.range.width }}%;background:#DCE9E2;border-radius:999px"></span>
+                  <span style="position:absolute;top:-3px;bottom:-3px;left:{{ f.range.marker }}%;width:2.5px;background:{{ f.range.markerColor }};border-radius:2px;transform:translateX(-50%)"></span>
+                </span>
+              </sc-if>
+            </span>
+            <span class="sci-caret" style="display:inline-block;transition:transform .2s ease;font-size:11px;color:#8A8475;text-align:center">&#9656;</span>
+          </summary>
+          <div style="padding:0 20px 18px;display:grid;grid-template-columns:1fr 150px;gap:14px 24px;align-items:start">
+            <p style="font-family:'Inter';font-size:14.5px;line-height:1.6;color:#4A453C;margin:0;max-width:64ch;text-wrap:pretty">{{ f.science }}</p>
+            <sc-if value="{{ f.hasRange }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'Inter';font-size:12px;color:#8A8475;line-height:1.5">{{ f.range.bandText }}<br><span style="font-family:'Spline Sans Mono',monospace;color:{{ f.range.markerColor }}">you · {{ f.value }}</span></div>
+            </sc-if>
+            <div style="grid-column:1 / -1;font-family:'Spline Sans Mono',monospace;font-size:11px;color:#8A8475"><span style="font-style:{{ f.citStyle }}">{{ f.citation }}</span> · grounded in the knowledge pack</div>
+          </div>
+        </details>
+      </sc-for>
+    </div>
+
+    <!-- diet -> SCFA module -->
+    <section data-reveal style="margin-top:44px;background:#F7F3EA;border-radius:18px;padding:32px 32px;box-shadow:0 1px 3px rgba(30,27,22,.05),0 1px 14px rgba(30,27,22,.03);border-top:3px solid #D69A3C;display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start">
+      <div style="flex:1 1 320px;min-width:280px">
+      <div style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.16em;text-transform:uppercase;color:#B47E22;margin-bottom:12px">Predicted metabolic output · modeled</div>
+      <h2 style="font-family:'Newsreader',serif;font-weight:400;font-size:27px;line-height:1.3;color:#1E1B16;margin:0 0 8px;max-width:30ch">What your community is geared to make from fiber</h2>
+      <p style="font-family:'Inter';font-size:15.5px;line-height:1.6;color:#4A453C;margin:0 0 22px;max-width:58ch">Holding your measured community fixed, we model the short-chain fatty acids it would produce on different diets. This is a directional prediction, not a prescription.</p>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+        <sc-for list="{{ dietTabs }}" as="d" hint-placeholder-count="3">
+          <button onClick="{{ d.onSelect }}" style="cursor:pointer;font-family:'Inter';font-size:13.5px;font-weight:500;padding:9px 16px;border-radius:999px;border:1px solid {{ d.border }};background:{{ d.bg }};color:{{ d.color }}">{{ d.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:baseline;margin-bottom:24px">
+        <div>
+          <div style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:34px;color:#1E1B16;line-height:1">{{ diet.total }}</div>
+          <div style="font-family:'Inter';font-size:12.5px;color:#8A8475;margin-top:4px">total SCFA (modeled units)</div>
+        </div>
+        <div style="font-family:'Inter';font-size:15px;color:#4A453C;flex:1 1 240px;min-width:200px;line-height:1.5">{{ diet.headline }}</div>
+      </div>
+      <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:#8A8475;margin-top:6px;line-height:1.5;max-width:46ch">Modeled with MICOM on AGORA reconstructions (~85% community coverage), across Virtual Metabolic Human diet media. Predicted, not prescriptive.</div>
+      </div>
+      <div style="flex:1 1 340px;min-width:280px;align-self:center">
+      <div style="background:#FBF1DE;border:1px solid #EAD9B5;border-radius:12px;padding:16px 18px;margin-bottom:22px;font-family:'Inter',system-ui,-apple-system,sans-serif;font-style:normal;font-weight:400;font-size:14.5px;line-height:1.6;color:#6B5320;letter-spacing:0">{{ diet.takeaway }}</div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ dietRows }}" as="s" hint-placeholder-count="3">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <span style="font-family:'Inter';font-size:14px;font-weight:500;color:#1E1B16">{{ s.label }}</span>
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:14px;color:#4A453C">{{ s.value }}</span>
+            </div>
+            <div style="height:12px;border-radius:999px;background:#E4DDCD;overflow:hidden">
+              <div style="height:100%;border-radius:999px;background:{{ s.color }};width:{{ s.pct }}%;transition:width .5s cubic-bezier(.22,1,.36,1)"></div>
+            </div>
+            <div style="font-family:'Inter';font-size:12px;color:#8A8475;margin-top:5px">{{ s.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+      </div>
+    </section>
+
+    <!-- how we know (validation + provenance) -->
+    <section data-reveal style="margin-top:44px">
+      <div style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.16em;text-transform:uppercase;color:#2F6E5A;margin-bottom:12px">How we know this is reliable</div>
+      <h2 style="font-family:'Newsreader',serif;font-weight:400;font-size:27px;line-height:1.3;color:#1E1B16;margin:0 0 24px;max-width:30ch">Checked against known answers</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px">
+        <sc-for list="{{ validation }}" as="v" hint-placeholder-count="3">
+          <div style="background:#F7F3EA;border-radius:18px;padding:22px 22px;box-shadow:0 1px 3px rgba(30,27,22,.05)">
+            <div style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:30px;color:#2F6E5A;line-height:1">{{ v.num }}</div>
+            <div style="font-family:'Inter';font-size:14px;line-height:1.5;color:#4A453C;margin-top:10px">{{ v.text }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;line-height:1.7;color:#8A8475;margin-top:28px;padding-top:24px;border-top:1px solid #DED7C7">{{ provLine }}</div>
+    </section>
+
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<a class="dc-methodology-link" href="/methodology">Methodology &rarr;</a>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showIntro&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;defaultDiet&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;average&quot;,&quot;high_fiber&quot;,&quot;low_fiber&quot;],&quot;default&quot;:&quot;average&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Experience&quot;}}">
+const BONE='#EDE8DD', INK='#1E1B16', INK6='#4A453C', INK4='#8A8475', LINE='#DED7C7';
+const VIRIDIAN='#2F6E5A', VIRID_MID='#5E9A83', RESIDENT='#B3BCA9', AMBER='#D69A3C', PLUM='#8A4F63', SLATE='#5E7488';
+
+const KEYSTONE=['ruminococcus bromii','faecalibacterium prausnitzii','prevotella copri','segatella copri'];
+const GOOD=['bifidobacterium longum','bifidobacterium breve','bifidobacterium adolescentis','megasphaera massiliensis','butyricicoccus pullicaecorum','anaerostipes caccae','anaerostipes hadrus','fusicatenibacter saccharivorans','blautia wexlerae','dysosmobacter welbionis','akkermansia muciniphila','roseburia intestinalis','agathobacter rectalis'];
+const WORTH=['veillonella ratti','escherichia coli'];
+
+function roleOf(species){
+  const s=species.toLowerCase();
+  if(WORTH.some(w=>s.includes(w))) return 'worth';
+  if(KEYSTONE.some(w=>s.includes(w))) return 'keystone';
+  if(GOOD.some(w=>s.includes(w))) return 'good';
+  return 'resident';
+}
+const ROLE_COLOR={keystone:VIRIDIAN, good:VIRID_MID, resident:RESIDENT, worth:PLUM};
+
+// ---------- data ----------
+const MAYA_ABUND=[
+ ["Ruminococcus bromii",20.87],["Bifidobacterium longum",12.85],["Faecalibacterium prausnitzii",11.32],
+ ["Veillonella ratti",10.25],["Megasphaera massiliensis",7.33],["Bacteroides stercoris",3.16],
+ ["Bacteroides fragilis",2.66],["Thomasclavelia ramosa",2.57],["Bacteroides thetaiotaomicron",2.50],
+ ["Phocaeicola dorei",2.10],["Clostridium innocuum",1.88],["Mediterraneibacter gnavus",1.39],
+ ["Enterocloster bolteae",1.26],["Massilimicrobiota timonensis",1.25],["Parabacteroides distasonis",1.11],
+ ["Clostridium SGB4750",1.04],["Sellimonas intestinalis",1.04],["Anthropogastromicrobium aceti",0.98],
+ ["Blautia wexlerae",0.69],["Fusicatenibacter saccharivorans",0.69],["Bacteroides uniformis",0.67]
+];
+
+function R(min,max,lo,hi,marker,text){return {min,max,lo,hi,marker,text};}
+
+const MAYA_FINDINGS=[
+ {claim:"You have a strong population of one of the gut's standout 'good' bacteria, sitting comfortably in the healthy range.",value:"11.3%",citation:"taxa:faecalibacterium_prausnitzii",confidence:"well-established",
+  science:"Faecalibacterium prausnitzii is a leading butyrate producer, which fuels the cells lining your colon and acts as an anti-inflammatory signal. Healthy adults typically run around 3–15%, so your level is right in that band.",
+  range:R(0,16,3,15,11.3,"typical 3–15% in healthy adults")},
+ {claim:"Your most abundant bug is a fiber-cracking keystone species — a good sign for a plant-forward diet like yours.",value:"20.9%",citation:"taxa:ruminococcus_bromii",confidence:"well-established",
+  science:"Ruminococcus bromii is the primary breaker-down of resistant starch (from things like cooled rice and potatoes, legumes, and whole grains). By cracking that starch open, it lets the wider community ferment it into beneficial short-chain fatty acids.",
+  range:R(0,25,1,18,20.9,"varies widely — can be a dominant member")},
+ {claim:"You carry a healthy share of a classic probiotic-type bacterium that helps support your gut barrier.",value:"12.9%",citation:"taxa:bifidobacterium_longum",confidence:"well-established",
+  science:"Bifidobacterium longum ferments dietary fibers into lactate and acetate and helps crowd out less friendly microbes. The Bifidobacterium genus is often around 1–10% in healthy adults, and yours is on the generous side.",
+  range:R(0,16,1,10,12.9,"genus often ~1–10%")},
+ {claim:"A lactate-recycling specialist is more prominent than it usually is — a gentle thing to keep an eye on rather than a worry.",value:"10.3%",citation:"taxa:veillonella",confidence:"established",worth:true,
+  science:"Veillonella doesn't eat sugar; it tidies up lactate made by other microbes and turns it into propionate and acetate. It's usually a minor member (under ~1–2%), so a higher level like yours simply reflects a lactate-rich community and is worth a soft look over time.",
+  range:R(0,12,0,2,10.3,"usually under ~1–2%")},
+ {claim:"Another short-chain-fatty-acid producer is contributing to your gut-lining nutrition.",value:"7.3%",citation:"taxa:megasphaera_massiliensis",confidence:"moderate",
+  science:"Megasphaera massiliensis makes short-chain fatty acids including butyrate and valerate from a range of substrates, which is generally viewed as supportive of the colon lining."},
+ {claim:"Your flexible 'generalist' backbone bacteria are present at a modest, normal level.",value:"~14% combined",citation:"taxa:bacteroides",confidence:"well-established",
+  science:"The Bacteroides group (including Bacteroides stercoris, B. fragilis, B. thetaiotaomicron, Phocaeicola dorei, and Parabacteroides distasonis) are versatile eaters that break down both fibers and proteins. They're a normal backbone of the adult gut, often 10–40% collectively.",
+  range:R(0,45,10,40,14,"a normal backbone, ~10–40%")},
+ {claim:"You have a little of a mucus-associated bacterium, but only at a low background level — nothing remarkable here.",value:"1.4%",citation:"taxa:mediterraneibacter_gnavus",confidence:"established association at high abundance",
+  science:"Mediterraneibacter gnavus can become inflammatory when it blooms to high levels, but at the low background level you have (under ~2%) it's an unremarkable, common resident.",
+  range:R(0,5,0,2,1.4,"low background, under ~2%")},
+ {claim:"A bacterium often seen as a 'recovery marker' is present, which tends to track a settled, balanced community.",value:"1.0%",citation:"taxa:sellimonas_intestinalis",confidence:"low-to-moderate",
+  science:"Sellimonas intestinalis has been proposed as a marker of gut homeostasis — its presence often tracks the community sitting in balance, though this is an emerging idea rather than proof."},
+ {claim:"Your overall diversity score is on the moderate-to-lower side — and that is not a problem by itself.",value:"Shannon 2.70 · 47 species",citation:"concepts:diversity",confidence:"well-established",
+  science:"Diversity summarizes how many species you have and how evenly they're spread. Low diversity is not automatically unhealthy — some healthy people on plant-forward or restricted diets run lower diversity while having excellent gut function, so it's just one lens among many."},
+ {claim:"Your community is geared toward making the short-chain fatty acids that come from fermenting fiber.",value:"butyrate ~30 · acetate ~59 (modeled)",citation:"concepts:scfa",confidence:"well-established",
+  science:"Short-chain fatty acids like butyrate, propionate, and acetate are made when gut bacteria ferment dietary fiber; butyrate in particular fuels your colon lining and has anti-inflammatory effects. Your mix of keystone fiber-degraders and butyrate producers supports this whole chain."}
+];
+
+const MAYA_METAB={average:{butyrate:30.34,acetate:58.84,propionate:0.07},high_fiber:{butyrate:28.74,acetate:69.15,propionate:0.0},low_fiber:{butyrate:30.34,acetate:59.73,propionate:0.59}};
+
+// alternates (synthetic personas, illustrative measurements)
+const THEO_ABUND=[
+ ["Bacteroides uniformis",18.4],["Phocaeicola vulgatus",14.2],["Bacteroides thetaiotaomicron",9.1],
+ ["Alistipes putredinis",6.3],["Escherichia coli",4.8],["Faecalibacterium prausnitzii",4.1],
+ ["Akkermansia muciniphila",3.4],["Parabacteroides distasonis",2.9],["Bacteroides fragilis",2.4],
+ ["Ruminococcus bromii",2.2],["Roseburia intestinalis",1.8],["Bifidobacterium longum",1.6],
+ ["Bacteroides stercoris",1.4],["Phocaeicola dorei",1.3],["Bilophila wadsworthia",1.1],
+ ["Blautia wexlerae",0.9],["Anaerostipes hadrus",0.8],["Collinsella aerofaciens",0.7],
+ ["Odoribacter splanchnicus",0.6],["Dialister invisus",0.5],["Bacteroides caccae",0.4],
+ ["Eubacterium hallii",0.4],["Ruthenibacterium lactatiformans",0.3],["Desulfovibrio piger",0.3]
+];
+const THEO_FINDINGS=[
+ {claim:"Your community leans on versatile generalists that handle both fiber and protein with ease.",value:"~48% combined",citation:"taxa:bacteroides",confidence:"well-established",
+  science:"The Bacteroides/Phocaeicola group are flexible eaters and a normal backbone of the adult gut, often 10–40% collectively. Yours sit on the higher side, which is common on a more protein-and-fat-forward diet.",range:R(0,60,10,40,48,"backbone ~10–40%")},
+ {claim:"Your standout butyrate producer is present but on the lighter side — the easiest place to make gains.",value:"4.1%",citation:"taxa:faecalibacterium_prausnitzii",confidence:"well-established",
+  science:"Faecalibacterium prausnitzii is a leading butyrate producer (typical 3–15%). Yours sits at the lower end, so adding more plants and resistant starch would give it more to work with.",range:R(0,16,3,15,4.1,"typical 3–15%")},
+ {claim:"A common gut bacterium is a touch more prominent than usual — worth a gentle look, not a concern.",value:"4.8%",citation:"taxa:escherichia_coli",confidence:"established",worth:true,
+  science:"Escherichia coli is a normal resident at low levels. A modestly raised share like yours often tracks diet and transit, and is worth watching over time rather than acting on now.",range:R(0,8,0,2,4.8,"usually under ~2%")},
+ {claim:"You carry a mucus-loving specialist linked to a well-tended gut lining.",value:"3.4%",citation:"taxa:akkermansia_muciniphila",confidence:"moderate",
+  science:"Akkermansia muciniphila lives in the mucus layer and is often associated with a healthy gut barrier and favorable metabolism. Its presence here is a nice signal."},
+ {claim:"Your fiber keystone is present but modest — feeding it would ripple through the whole community.",value:"2.2%",citation:"taxa:ruminococcus_bromii",confidence:"well-established",
+  science:"Ruminococcus bromii cracks open resistant starch so others can ferment it. At a modest level, more resistant starch (cooled potato and rice, legumes, whole grains) is an easy lever.",range:R(0,18,1,13,2.2,"~1–13%, can dominate")},
+ {claim:"Your Bifidobacterium is on the lower side — a gentle opportunity rather than a problem.",value:"1.6%",citation:"taxa:bifidobacterium_longum",confidence:"well-established",
+  science:"The Bifidobacterium genus is often around 1–10% in healthy adults; yours sits at the low end. Fermented foods and prebiotic fibers tend to support it.",range:R(0,16,1,10,1.6,"genus often ~1–10%")},
+ {claim:"A sulfur-handling bacterium is present at a low level — typical of a richer, meatier diet.",value:"1.1%",citation:"taxa:bilophila_wadsworthia",confidence:"moderate",worth:true,
+  science:"Bilophila wadsworthia thrives on the bile released by fat and animal protein. At low levels it's a normal resident; it's just a soft signal of diet pattern, not a concern on its own."},
+ {claim:"A handful of secondary butyrate-makers round out your fermenters.",value:"~3% combined",citation:"concepts:scfa",confidence:"well-established",
+  science:"Roseburia, Anaerostipes and Blautia each contribute to short-chain fatty acid production. They give you a base to build on as you add more fiber."},
+ {claim:"Your overall diversity is healthy and broad.",value:"Shannon 3.10 · 58 species",citation:"concepts:diversity",confidence:"well-established",
+  science:"A higher Shannon score reflects many species spread fairly evenly — generally a robust, resilient community that handles dietary change well."},
+ {claim:"Your community currently leans toward propionate and acetate over butyrate.",value:"butyrate ~21 · acetate ~50 (modeled)",citation:"concepts:scfa",confidence:"well-established",
+  science:"With a generalist, protein-savvy community, the modeled output tilts toward propionate and acetate. Feeding the fiber-degraders is predicted to lift butyrate specifically (see the diet section below)."}
+];
+const THEO_METAB={average:{butyrate:21.0,acetate:50.5,propionate:1.2},high_fiber:{butyrate:27.4,acetate:61.0,propionate:1.0},low_fiber:{butyrate:18.6,acetate:47.2,propionate:1.6}};
+
+const NOOR_ABUND=[
+ ["Segatella copri",16.0],["Faecalibacterium prausnitzii",9.8],["Ruminococcus bromii",7.2],
+ ["Roseburia intestinalis",5.4],["Agathobacter rectalis",5.0],["Bacteroides uniformis",4.2],
+ ["Bifidobacterium adolescentis",4.1],["Blautia wexlerae",3.3],["Akkermansia muciniphila",3.0],
+ ["Anaerostipes hadrus",2.6],["Bifidobacterium longum",2.2],["Fusicatenibacter saccharivorans",1.9],
+ ["Prevotella stercorea",1.7],["Coprococcus eutactus",1.4],["Lachnospira pectinoschiza",1.2],
+ ["Dialister succinatiphilus",1.0],["Roseburia faecis",0.9],["Butyrivibrio crossotus",0.8],
+ ["Eubacterium hallii",0.7],["Methanobrevibacter smithii",0.6],["Anaerobutyricum hallii",0.5],
+ ["Catenibacterium mitsuokai",0.4],["Sutterella wadsworthensis",0.3],["Coprococcus comes",0.3]
+];
+const NOOR_FINDINGS=[
+ {claim:"A powerhouse plant-fiber fermenter leads your community — classic for a high-fiber, plant-rich diet.",value:"16.0%",citation:"taxa:segatella_copri",confidence:"well-established",
+  science:"Segatella copri (formerly Prevotella copri) is strongly associated with fiber- and plant-rich diets and broad carbohydrate fermentation. Seeing it lead is a hallmark of a high-fiber pattern.",range:R(0,25,1,20,16,"common dominant on high-fiber diets")},
+ {claim:"Your standout butyrate producer is thriving, right in the healthy range.",value:"9.8%",citation:"taxa:faecalibacterium_prausnitzii",confidence:"well-established",
+  science:"Faecalibacterium prausnitzii is a leading butyrate producer and a marker of a healthy gut. Yours is comfortably within the typical 3–15% band.",range:R(0,16,3,15,9.8,"typical 3–15%")},
+ {claim:"A keystone resistant-starch cracker is well represented, feeding the whole fermentation chain.",value:"7.2%",citation:"taxa:ruminococcus_bromii",confidence:"well-established",
+  science:"Ruminococcus bromii opens up resistant starch so the rest of the community can ferment it into short-chain fatty acids — a keystone role.",range:R(0,18,1,13,7.2,"~1–13%, can dominate")},
+ {claim:"You have a deep bench of additional butyrate-makers backing up the main producers.",value:"~16% combined",citation:"concepts:scfa",confidence:"well-established",
+  science:"Roseburia, Agathobacter rectalis, Anaerostipes, Fusicatenibacter and Coprococcus are all butyrate producers. Together they make a deep, redundant fiber-to-butyrate pipeline."},
+ {claim:"Your Bifidobacteria are healthy and well represented.",value:"~6% combined",citation:"taxa:bifidobacterium_longum",confidence:"well-established",
+  science:"Bifidobacterium adolescentis and B. longum together sit at a generous level, helping ferment fiber into lactate and acetate and supporting your gut barrier.",range:R(0,16,1,10,6.3,"genus often ~1–10%")},
+ {claim:"A mucus-loving specialist tied to a well-tended gut lining is comfortably present.",value:"3.0%",citation:"taxa:akkermansia_muciniphila",confidence:"moderate",
+  science:"Akkermansia muciniphila lives in the mucus layer and is associated with a healthy gut barrier and favorable metabolism."},
+ {claim:"A bacterium linked to metabolic health rounds out your community.",value:"3.3%",citation:"taxa:blautia_wexlerae",confidence:"moderate",
+  science:"Higher Blautia wexlerae has been associated with more favorable metabolic profiles. It's a welcome member of a fiber-fed community."},
+ {claim:"A trace of a normal methane-making archaeon is present — common and unremarkable here.",value:"0.6%",citation:"taxa:methanobrevibacter_smithii",confidence:"established",worth:true,
+  science:"Methanobrevibacter smithii makes methane from the hydrogen other microbes produce. At a low level it's a normal part of many healthy guts; only when high is it sometimes linked with slower transit."},
+ {claim:"Your overall diversity is high — a lush, resilient community.",value:"Shannon 3.60 · 72 species",citation:"concepts:diversity",confidence:"well-established",
+  science:"High richness and even spread generally indicate a robust community that resists disturbance. On a plant-forward diet this is a lovely picture."},
+ {claim:"Your community is built to turn fiber into butyrate — and is predicted to do even more with more of it.",value:"butyrate ~38 · acetate ~62 (modeled)",citation:"concepts:scfa",confidence:"well-established",
+  science:"Your dense bench of fiber-degraders and butyrate producers already makes a strong short-chain fatty acid output, and leaning further into fiber is predicted to push butyrate higher still (see the diet section below)."}
+];
+const NOOR_METAB={average:{butyrate:38.2,acetate:62.0,propionate:2.4},high_fiber:{butyrate:44.6,acetate:71.5,propionate:2.1},low_fiber:{butyrate:31.0,acetate:55.4,propionate:2.9}};
+
+const REPORTS={
+ maya:{name:"Maya",age:28,abund:MAYA_ABUND,findings:MAYA_FINDINGS,metab:MAYA_METAB,
+   headline:"Maya, your gut looks like a busy, fiber-loving community with several well-known beneficial bacteria thriving — overall a reassuring picture, with a couple of gentle things worth noticing.",
+   takeaway:"🥗 The simple version for you: your fiber-fermenters are already thriving, so the lever isn't more fiber — it's variety. Aim for a wider range of plants (the 30-different-ones-a-week idea) plus a daily fermented food like yogurt, kefir or kimchi to broaden your community and nudge that diversity score up.",
+   provLine:"Sample DRR042265 · ENA PRJDB3601 (Japanese gut microbiomes) · 1,500,000 read pairs subsampled · fastp 1.3.5 · MetaPhlAn 4.2.4 · 92.8% classified, 7.2% unclassified · generated 2026-06-26",
+   disclaimer:"Maya is a synthetic demo patient. The measurements are real (from a public sequencing sample); only the persona is invented. This report is for informational and demonstration purposes only and is not medical advice, diagnosis, or treatment."},
+ theo:{name:"Theo",age:35,abund:THEO_ABUND,findings:THEO_FINDINGS,metab:THEO_METAB,
+   headline:"Theo, your gut leans toward a protein-and-fat-savvy crowd of versatile generalists — solid and stable, with a couple of fiber-lovers you could feed a little more.",
+   takeaway:"🌱 The simple version for you: your fiber-fermenters are underfed, so this is the clearest win. Lean into more plants and resistant starch — beans and lentils, whole grains, and cooled rice or potato — to give your butyrate-makers something to work with.",
+   provLine:"Pipeline: fastp → MetaPhlAn 4 → HUMAnN 3 → MICOM · 58 species classified"},
+ noor:{name:"Noor",age:42,abund:NOOR_ABUND,findings:NOOR_FINDINGS,metab:NOOR_METAB,
+   headline:"Noor, your gut reads like a lush, high-fiber rainforest — lots of species, a deep bench of butyrate-makers, and a really healthy-looking spread.",
+   takeaway:"🐟 The simple version for you: your fiber game is already excellent, so more fiber isn't the lever — the next gain is anti-inflammatory fats. Bring in more oily fish (salmon, sardines, mackerel), walnuts and olive oil to round out an already-strong gut.",
+   provLine:"Pipeline: fastp → MetaPhlAn 4 → HUMAnN 3 → MICOM · 72 species classified"}
+};
+
+const PROC_LINES=["Cleaning up the raw reads","Removing your human DNA (a privacy step)","Identifying the species present","Modeling predicted metabolic output","Grounding every claim in the literature"];
+
+function confStyle(c){
+  const s=(c||'').toLowerCase();
+  if(s.includes('well-established')) return {label:'well-established',fill:VIRIDIAN,border:VIRIDIAN};
+  if(s.includes('low-to-moderate')||s.includes('emerging')) return {label:'emerging',fill:'transparent',border:INK4};
+  if(s.includes('association')) return {label:'context-dependent',fill:'transparent',border:INK4};
+  if(s==='established') return {label:'established',fill:'transparent',border:VIRIDIAN};
+  if(s.includes('moderate')) return {label:'moderate',fill:'transparent',border:AMBER};
+  return {label:c||'established',fill:'transparent',border:INK4};
+}
+function citFmt(cit){
+  const [kind,key]=cit.split(':');
+  if(kind==='concepts'){ return {text:key==='scfa'?'short-chain fatty acids':key, italic:'normal'}; }
+  const name=key.replace(/_/g,' ');
+  const w=name.split(' ');
+  const disp=w.length>=2 ? w[0].charAt(0).toUpperCase()+'. '+w.slice(1).join(' ') : name.charAt(0).toUpperCase()+name.slice(1);
+  return {text:disp, italic:'italic'};
+}
+
+class Component extends DCLogic {
+  constructor(p){
+    super(p);
+    this.state={ stage:'init', procStep:-1, activeReport:'maya', diet: 'average', tab:'findings' };
+    this._timers=[];
+  }
+  componentDidMount(){
+    const dd=this.props.defaultDiet;
+    if(dd) this.setState({diet:dd});
+    const skip = this.props.showIntro===false;
+    if(skip){ this.setState({stage:'report'}); return; }
+    this.setState({stage:'processing',procStep:0});
+    const total=PROC_LINES.length;
+    for(let i=1;i<total;i++){ this._timers.push(setTimeout(()=>this.setState({procStep:i}), 720*i)); }
+    this._timers.push(setTimeout(()=>{ this.setState({stage:'report'}); }, 720*total+700));
+  }
+  componentWillUnmount(){ this._timers.forEach(clearTimeout); }
+  finishIntro(){ this._timers.forEach(clearTimeout); this.setState({stage:'report'}); }
+  selectReport(id){
+    if(id===this.state.activeReport) return;
+    this.setState({activeReport:id, diet:'average', tab:'findings'});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  scrollToFinding(i){
+    if(i==null) return;
+    const go=()=>{ const el=document.getElementById('finding-'+i); if(el){ el.open=true; const y=el.getBoundingClientRect().top+window.scrollY-80; window.scrollTo({top:y,behavior:'smooth'}); } };
+    if(this.state.tab!=='findings'){ this.setState({tab:'findings'}); setTimeout(go,90); } else { go(); }
+  }
+
+  renderVals(){
+    const rep=REPORTS[this.state.activeReport]||REPORTS.maya;
+    const stage=this.state.stage;
+
+    // findings finding-index lookup
+    const taxKeys={};
+    rep.findings.forEach((f,i)=>{ const [k,key]=f.citation.split(':'); if(k==='taxa'){ taxKeys[key]=i; } });
+    const findingIndexFor=(species)=>{
+      const g=species.toLowerCase().replace(/ /g,'_');
+      if(taxKeys[g]!=null) return taxKeys[g];
+      const genus=species.toLowerCase().split(' ')[0];
+      if(taxKeys[genus]!=null) return taxKeys[genus];
+      // genus-group fallbacks
+      if(['phocaeicola','parabacteroides','alistipes'].includes(genus) && taxKeys['bacteroides']!=null) return taxKeys['bacteroides'];
+      return null;
+    };
+
+    // ribbon
+    const shown=rep.abund.slice(0,16);
+    const tail=rep.abund.slice(16);
+    const tailSum=tail.reduce((a,b)=>a+b[1],0);
+    const items=shown.map(x=>({species:x[0],pct:x[1]}));
+    if(tailSum>0.05) items.push({species:'+ '+tail.length+' more species',pct:tailSum,other:true});
+    const sum=items.reduce((a,b)=>a+b.pct,0);
+    const maxPct=items[0]?items[0].pct:1;
+    const ribbon=items.map((it,i)=>{
+      const role=it.other?'resident':roleOf(it.species);
+      const fi=it.other?null:findingIndexFor(it.species);
+      const h=Math.round(34+Math.sqrt(it.pct/maxPct)*58);
+      return {
+        w:(it.pct/sum*100).toFixed(3),
+        h, radius: Math.min(18, Math.round(h/3.2)),
+        color: it.other?'#CFC9BB':ROLE_COLOR[role],
+        cursor: fi!=null?'pointer':'default',
+        aria: it.other? it.species+' ('+it.pct.toFixed(1)+'%)' : it.species+' — '+it.pct.toFixed(1)+'%'+(fi!=null?' (tap to jump)':''),
+        dur:(6+(i%4)*0.8).toFixed(1),
+        delay:((i%5)*0.5).toFixed(1),
+        onClick:()=>this.scrollToFinding(fi)
+      };
+    });
+    const legend=[
+      {label:'keystone',color:VIRIDIAN},{label:'beneficial',color:VIRID_MID},
+      {label:'resident',color:RESIDENT},{label:'worth a gentle look',color:PLUM}
+    ];
+
+    // findings
+    const findings=rep.findings.map((f,i)=>{
+      const conf=confStyle(f.confidence);
+      const worth=!!f.worth;
+      const markerColor=worth?PLUM:VIRIDIAN;
+      const cit=citFmt(f.citation);
+      const [ckind,ckey]=f.citation.split(':');
+      const frole=worth?'worth':(ckind==='taxa'?roleOf((ckey||'').replace(/_/g,' ')):'concept');
+      const ROLE_EDGE={keystone:VIRIDIAN,good:VIRID_MID,resident:RESIDENT,worth:PLUM,concept:'#CBC4B4'};
+      let range=null;
+      if(f.range){ const r=f.range; range={
+        left:(r.lo/r.max*100).toFixed(2), width:((r.hi-r.lo)/r.max*100).toFixed(2),
+        marker:(Math.min(r.marker,r.max)/r.max*100).toFixed(2),
+        markerColor, bandText:r.text, maxLabel:r.max+'%' }; }
+      return {
+        idx:i, claim:f.claim, value:f.value, science:f.science,
+        hasRange:!!range, range:range||{left:'0',width:'0',marker:'0',markerColor,bandText:'',maxLabel:''},
+        conf, confLabel:conf.label, citation:cit.text, citStyle:cit.italic,
+        valueColor: worth?PLUM:INK, edge: ROLE_EDGE[frole],
+        delay: Math.min(i*0.05,0.4).toFixed(2), span: worth?'1 / -1':'auto'
+      };
+    });
+
+    // diet
+    const m=rep.metab; const diet=this.state.diet; const d=m[diet];
+    const allVals=[]; ['average','high_fiber','low_fiber'].forEach(k=>{const x=m[k];allVals.push(x.butyrate,x.acetate,x.propionate);});
+    const maxV=Math.max.apply(null,allVals);
+    const tot=(x)=>x.butyrate+x.acetate+x.propionate;
+    const total=tot(d), avgTot=tot(m.average);
+    const pctDelta=((total-avgTot)/avgTot*100);
+    const butDelta=((d.butyrate-m.average.butyrate)/m.average.butyrate*100);
+    const aceDelta=((d.acetate-m.average.acetate)/m.average.acetate*100);
+    const fmtPct=(v)=>(v>=0?'+':'')+v.toFixed(0)+'%';
+    let headline;
+    if(diet==='average'){ headline="This is your baseline — what your community is predicted to make on a typical mixed diet. Switch diets to see where the gains are."; }
+    else if(diet==='high_fiber'){
+      const butUp = butDelta >= 3;
+      headline = "Leaning into more fiber is predicted to improve your output — total short-chain fatty acids rise "+fmtPct(pctDelta)
+        + (butUp ? ", including "+fmtPct(butDelta)+" more butyrate, the anti-inflammatory fuel for your colon lining. This is the lever to pull."
+                 : ", led by acetate ("+fmtPct(aceDelta)+"). For your community, fiber is the lever to pull.");
+    }
+    else { headline="A lower-fiber diet is predicted to pull your output down ("+fmtPct(pctDelta)+" total) — your fiber-degraders only partly make up the difference."; }
+    const dietRows=[
+      {label:'Butyrate',value:d.butyrate.toFixed(1),pct:(d.butyrate/maxV*100).toFixed(1),color:'#B47E22',note:'fuels the cells lining your colon'},
+      {label:'Acetate',value:d.acetate.toFixed(1),pct:(d.acetate/maxV*100).toFixed(1),color:'#D69A3C',note:'feeds into whole-body metabolism'},
+      {label:'Propionate',value:d.propionate.toFixed(2),pct:(d.propionate/maxV*100).toFixed(1),color:'#E3BC79',note:'supports satiety and liver metabolism'}
+    ];
+    const dietTabs=[['average','Average diet'],['high_fiber','Higher fiber'],['low_fiber','Lower fiber']].map(([k,lbl])=>({
+      label:lbl, onSelect:()=>this.setState({diet:k}),
+      bg: diet===k?AMBER:'transparent', color: diet===k?'#fff':INK6, border: diet===k?AMBER:LINE
+    }));
+
+    // tabs
+    const tab=this.state.tab;
+    const tabs=[['findings','Your findings'],['diet','Diet & output'],['trust','How we know']].map(([k,lbl])=>({
+      label:lbl, onSelect:()=>{this.setState({tab:k});window.scrollTo({top:0,behavior:'smooth'});},
+      color: tab===k?INK:INK4, weight: tab===k?'600':'500', underline: tab===k?VIRIDIAN:'transparent'
+    }));
+
+    // selector
+    const reports=Object.keys(REPORTS).map(id=>{
+      const active=id===this.state.activeReport;
+      return { label:REPORTS[id].name, onSelect:()=>this.selectReport(id),
+        bg:active?INK:'transparent', color:active?'#F7F3EA':INK6, border:active?INK:LINE };
+    });
+
+    // processing
+    const procLines=PROC_LINES.map((t,i)=>{
+      const step=this.state.procStep;
+      const done=i<step, active=i===step;
+      return { text:t, opacity: i<=step?'1':'0.32', dot: done?VIRIDIAN:(active?AMBER:'#CFC9BB') };
+    });
+    const procPct=Math.min(100,Math.round(((this.state.procStep+1)/PROC_LINES.length)*100));
+
+    const validation=[
+      {num:'30', text:'simulated communities with a known make-up, run blind through the same pipeline.'},
+      {num:'96%', text:'of the planted species were correctly recovered, with zero false positives.'},
+      {num:'ρ 0.78', text:'rank agreement between the true and the measured abundances.'}
+    ];
+
+    return {
+      showProcessing: stage==='processing',
+      showReport: stage==='report' || stage==='init',
+      activeName: rep.name,
+      procLines, procPct, onSkip:()=>this.finishIntro(),
+      reports,
+      eyebrow:'A field guide to your gut · for '+rep.name+', '+rep.age,
+      ribbon, legend,
+      headline: rep.headline,
+      findings,
+      dietTabs, dietRows,
+      diet:{ total:total.toFixed(1), headline, takeaway: rep.takeaway },
+      validation,
+      tabs, tabFindings: tab==='findings', tabDiet: tab==='diet', tabTrust: tab==='trust',
+      provLine: rep.provLine
+    };
+  }
+}
+</script>
+</body>
+</html>

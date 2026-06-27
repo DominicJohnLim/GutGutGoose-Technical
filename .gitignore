@@ -1,5 +1,7 @@
 CLAUDE.md
 PLAN.md
+BACKGROUND.md
+design-brief.md
 docs/
 .superpowers/
 
@@ -12,3 +14,6 @@ data/results/*
 !data/results/report.json
 !data/results/fastp.html
 .DS_Store
+.env
+*/__pycache__/*
+.gstack/
