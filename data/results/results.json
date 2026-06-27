@@ -206,8 +206,95 @@
     "richness": 47,
     "evenness": 0.702
   },
-  "pathways": [],
+  "pathways": [
+    {
+      "id": "VALSYN-PWY",
+      "name": "L-valine biosynthesis",
+      "abundance": 138.5
+    },
+    {
+      "id": "PWY-6163",
+      "name": "chorismate biosynthesis from 3-dehydroquinate",
+      "abundance": 129.6
+    },
+    {
+      "id": "COMPLETE-ARO-PWY",
+      "name": "superpathway of aromatic amino acid biosynthesis",
+      "abundance": 116.6
+    },
+    {
+      "id": "PWY-7238",
+      "name": "sucrose biosynthesis II",
+      "abundance": 115.0
+    },
+    {
+      "id": "ARO-PWY",
+      "name": "chorismate biosynthesis I",
+      "abundance": 114.6
+    },
+    {
+      "id": "PWY-6609",
+      "name": "adenine and adenosine salvage III",
+      "abundance": 108.9
+    },
+    {
+      "id": "ARGSYN-PWY",
+      "name": "L-arginine biosynthesis I (via L-ornithine)",
+      "abundance": 107.0
+    },
+    {
+      "id": "ARGSYNBSUB-PWY",
+      "name": "L-arginine biosynthesis II (acetyl cycle)",
+      "abundance": 106.1
+    },
+    {
+      "id": "PWY-6386",
+      "name": "UDP-N-acetylmuramoyl-pentapeptide biosynthesis II (lysine-containing)",
+      "abundance": 104.8
+    },
+    {
+      "id": "PWY-6387",
+      "name": "UDP-N-acetylmuramoyl-pentapeptide biosynthesis I (meso-diaminopimelate containing)",
+      "abundance": 103.2
+    },
+    {
+      "id": "TRNA-CHARGING-PWY",
+      "name": "tRNA charging",
+      "abundance": 101.4
+    },
+    {
+      "id": "PWY-5686",
+      "name": "UMP biosynthesis I",
+      "abundance": 101.1
+    }
+  ],
   "evidence": {
     "fastp_html": "data/results/fastp.html"
+  },
+  "pathways_total": 174,
+  "metabolic": {
+    "sample": "maya_real",
+    "model_coverage": 0.85,
+    "diets": {
+      "average": {
+        "butyrate": 30.34,
+        "propionate": 0.07,
+        "acetate": 58.84
+      },
+      "high_fiber": {
+        "butyrate": 28.74,
+        "propionate": 0.0,
+        "acetate": 69.15
+      },
+      "low_fiber": {
+        "butyrate": 30.34,
+        "propionate": 0.59,
+        "acetate": 59.73
+      }
+    },
+    "butyrate_vs_average_pct": {
+      "high_fiber": -5.3,
+      "low_fiber": 0.0
+    }
   }
 }
