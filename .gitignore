@@ -1,3 +1,12 @@
 CLAUDE.md
 PLAN.md
 docs/
+
+# build inputs & databases — never commit
+data/
+# but DO keep the small served artifacts
+!data/results/
+data/results/*
+!data/results/results.json
+!data/results/report.json
+!data/results/fastp.html
