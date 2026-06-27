@@ -53,3 +53,10 @@ def test_sanity_check_passes_with_unclassified_fraction():
     # 25 species summing to 92.84 + 7.16 unclassified = 100 -> no raise (real MetaPhlAn4 shape)
     abundance = [{"species": f"sp{i}", "rel_abundance_pct": 92.84 / 25} for i in range(25)]
     sanity_check(abundance, pathways=[], unclassified_pct=7.16)
+
+def test_sanity_check_min_species_override():
+    # a designed 12-species synthetic community: rejected at the default floor, ok when relaxed
+    abundance = [{"species": f"sp{i}", "rel_abundance_pct": 100 / 12} for i in range(12)]
+    with pytest.raises(ValueError):
+        sanity_check(abundance, pathways=[])
+    sanity_check(abundance, pathways=[], min_species=10)

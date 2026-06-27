@@ -1,0 +1,90 @@
+{
+  "provenance": {
+    "sample_accession": "SYNTHETIC-ISS",
+    "source": "InSilicoSeq simulated community (16 designed species)",
+    "subsampled_read_pairs": 2000000,
+    "tool_versions": {
+      "fastp": "fastp 1.3.5",
+      "metaphlan": "MetaPhlAn version 4.2.4 (21 Oct 2025)"
+    },
+    "generated_at": "2026-06-26"
+  },
+  "classified_pct": 78.59,
+  "unclassified_pct": 21.41,
+  "abundance": [
+    {
+      "species": "Bifidobacterium longum",
+      "rel_abundance_pct": 13.529109
+    },
+    {
+      "species": "Bacteroides uniformis",
+      "rel_abundance_pct": 11.780882
+    },
+    {
+      "species": "Bifidobacterium adolescentis",
+      "rel_abundance_pct": 9.836258
+    },
+    {
+      "species": "Agathobacter rectalis",
+      "rel_abundance_pct": 8.159781
+    },
+    {
+      "species": "Methanobrevibacter smithii",
+      "rel_abundance_pct": 5.780185
+    },
+    {
+      "species": "Roseburia intestinalis",
+      "rel_abundance_pct": 5.16532
+    },
+    {
+      "species": "Segatella copri",
+      "rel_abundance_pct": 4.687573
+    },
+    {
+      "species": "Blautia wexlerae",
+      "rel_abundance_pct": 4.150755
+    },
+    {
+      "species": "Anaerostipes hadrus",
+      "rel_abundance_pct": 4.107438
+    },
+    {
+      "species": "Bacteroides thetaiotaomicron",
+      "rel_abundance_pct": 2.884866
+    },
+    {
+      "species": "Akkermansia muciniphila",
+      "rel_abundance_pct": 2.667473
+    },
+    {
+      "species": "Faecalibacterium prausnitzii",
+      "rel_abundance_pct": 2.394951
+    },
+    {
+      "species": "Ruminococcus bromii",
+      "rel_abundance_pct": 1.320411
+    },
+    {
+      "species": "Bacteroides fragilis",
+      "rel_abundance_pct": 1.133777
+    },
+    {
+      "species": "Desulfovibrio piger",
+      "rel_abundance_pct": 0.588626
+    },
+    {
+      "species": "Escherichia coli",
+      "rel_abundance_pct": 0.403379
+    }
+  ],
+  "diversity": {
+    "shannon": 2.467,
+    "richness": 16,
+    "evenness": 0.89
+  },
+  "pathways": [],
+  "evidence": {
+    "fastp_html": "data/results/fastp.html"
+  },
+  "simulated": true
+}

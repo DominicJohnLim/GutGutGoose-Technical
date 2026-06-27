@@ -15,14 +15,16 @@ def parse_unclassified(path):
                 return float(line.rstrip("\n").split("\t")[2])
     return 0.0
 
-def sanity_check(abundance, pathways, unclassified_pct=0.0):
+def sanity_check(abundance, pathways, unclassified_pct=0.0, min_species=20):
     # MetaPhlAn4 splits the community into classified species + an UNCLASSIFIED
     # fraction; together they must sum to ~100. A wrong-column parse would break this.
     total = sum(r["rel_abundance_pct"] for r in abundance) + unclassified_pct
     if not (99.0 <= total <= 101.0):
         raise ValueError(f"species + unclassified = {total:.2f}, expected ~100 (possible parse error)")
-    if len(abundance) <= 20:
-        raise ValueError(f"only {len(abundance)} species — looks like noise, not a real profile")
+    # Real stool samples carry many species; noise classifies to almost none. A designed
+    # synthetic community can legitimately have fewer, so the floor is a parameter.
+    if len(abundance) < min_species:
+        raise ValueError(f"only {len(abundance)} species (< {min_species}) — looks like noise, not a real profile")
 
 def _tool_version(cmd):
     try:
@@ -31,11 +33,11 @@ def _tool_version(cmd):
     except Exception:
         return "unknown"
 
-def build_results(metaphlan_tsv, sample_acc, source, read_pairs, pathways=None):
+def build_results(metaphlan_tsv, sample_acc, source, read_pairs, pathways=None, min_species=20):
     abundance = parse_abundance(metaphlan_tsv)
     unclassified = parse_unclassified(metaphlan_tsv)
     pathways = pathways or []
-    sanity_check(abundance, pathways, unclassified)
+    sanity_check(abundance, pathways, unclassified, min_species)
     return {
         "provenance": {
             "sample_accession": sample_acc,
