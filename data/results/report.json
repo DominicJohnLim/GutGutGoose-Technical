@@ -1,0 +1,76 @@
+{
+  "headline": "Maya, your gut looks like a busy, fiber-loving community with several well-known beneficial bacteria thriving \u2014 overall a reassuring picture with a couple of gentle things worth noticing.",
+  "findings": [
+    {
+      "claim": "You have a strong population of one of the gut's standout 'good' bacteria, sitting comfortably in the healthy range.",
+      "value": "11.3%",
+      "citation": "taxa:faecalibacterium_prausnitzii",
+      "confidence": "well-established",
+      "science_underneath": "Faecalibacterium prausnitzii is a leading butyrate producer, which fuels the cells lining your colon and acts as an anti-inflammatory signal. Healthy adults typically run around 3\u201315%, so your level is right in that band."
+    },
+    {
+      "claim": "Your most abundant bug is a fiber-cracking keystone species \u2014 a good sign for a plant-forward diet like yours.",
+      "value": "20.9%",
+      "citation": "taxa:ruminococcus_bromii",
+      "confidence": "well-established",
+      "science_underneath": "Ruminococcus bromii is the primary breaker-down of resistant starch (from things like cooled rice and potatoes, legumes, and whole grains). By cracking that starch open, it lets the wider community ferment it into beneficial short-chain fatty acids."
+    },
+    {
+      "claim": "You carry a healthy share of a classic probiotic-type bacterium that helps support your gut barrier.",
+      "value": "12.9%",
+      "citation": "taxa:bifidobacterium_longum",
+      "confidence": "well-established",
+      "science_underneath": "Bifidobacterium longum ferments dietary fibers into lactate and acetate and helps crowd out less friendly microbes. The Bifidobacterium genus is often around 1\u201310% in healthy adults, and yours is on the generous side."
+    },
+    {
+      "claim": "A lactate-recycling specialist is more prominent than it usually is \u2014 a gentle thing to keep an eye on rather than a worry.",
+      "value": "10.3%",
+      "citation": "taxa:veillonella",
+      "confidence": "established",
+      "science_underneath": "Veillonella doesn't eat sugar; it tidies up lactate made by other microbes and turns it into propionate and acetate. It's usually a minor member (under ~1\u20132%), so a higher level like yours simply reflects a lactate-rich community and is worth a soft look over time."
+    },
+    {
+      "claim": "Another short-chain-fatty-acid producer is contributing to your gut-lining nutrition.",
+      "value": "7.3%",
+      "citation": "taxa:megasphaera_massiliensis",
+      "confidence": "moderate",
+      "science_underneath": "Megasphaera massiliensis makes short-chain fatty acids including butyrate and valerate from a range of substrates, which is generally viewed as supportive of the colon lining."
+    },
+    {
+      "claim": "Your flexible 'generalist' backbone bacteria are present at a modest, normal level.",
+      "value": "~14% combined",
+      "citation": "taxa:bacteroides",
+      "confidence": "well-established",
+      "science_underneath": "The Bacteroides group (including Bacteroides stercoris, B. fragilis, B. thetaiotaomicron, Phocaeicola dorei, and Parabacteroides distasonis) are versatile eaters that break down both fibers and proteins. They're a normal backbone of the adult gut, often 10\u201340% collectively."
+    },
+    {
+      "claim": "You have a little of a mucus-associated bacterium, but only at a low background level \u2014 nothing remarkable here.",
+      "value": "1.4%",
+      "citation": "taxa:mediterraneibacter_gnavus",
+      "confidence": "established association at high abundance",
+      "science_underneath": "Mediterraneibacter gnavus can become inflammatory when it blooms to high levels, but at the low background level you have (under ~2%) it's an unremarkable, common resident."
+    },
+    {
+      "claim": "A bacterium often seen as a 'recovery marker' is present, which tends to track a settled, balanced community.",
+      "value": "1.0%",
+      "citation": "taxa:sellimonas_intestinalis",
+      "confidence": "low-to-moderate",
+      "science_underneath": "Sellimonas intestinalis has been proposed as a marker of gut homeostasis \u2014 its presence often tracks the community sitting in balance, though this is an emerging idea rather than proof."
+    },
+    {
+      "claim": "Your overall diversity score is on the moderate-to-lower side \u2014 and that is not a problem by itself.",
+      "value": "Shannon 2.70, 47 species",
+      "citation": "concepts:diversity",
+      "confidence": "well-established",
+      "science_underneath": "Diversity summarizes how many species you have and how evenly they're spread. Low diversity is not automatically unhealthy \u2014 some healthy people on plant-forward or restricted diets run lower diversity while having excellent gut function, so it's just one lens among many."
+    },
+    {
+      "claim": "Your community is geared toward making the short-chain fatty acids that come from fermenting fiber.",
+      "value": "butyrate ~30, acetate ~59 (modeled)",
+      "citation": "concepts:scfa",
+      "confidence": "well-established",
+      "science_underneath": "Short-chain fatty acids like butyrate, propionate, and acetate are made when gut bacteria ferment dietary fiber; butyrate in particular fuels your colon lining and has anti-inflammatory effects. Your mix of keystone fiber-degraders and butyrate producers supports this whole chain."
+    }
+  ],
+  "footer": "Maya is a synthetic demo patient. This report is for informational and demonstration purposes only and is not medical advice, diagnosis, or treatment. Knowledge-pack citations are marked for verification in a human review gate."
+}
