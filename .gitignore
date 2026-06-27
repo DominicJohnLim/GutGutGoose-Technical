@@ -17,3 +17,4 @@ data/results/*
 .env
 */__pycache__/*
 .gstack/
+*/node_modules/*
