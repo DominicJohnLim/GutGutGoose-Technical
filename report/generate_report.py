@@ -1,5 +1,4 @@
-import json, os
-from anthropic import Anthropic
+import json, os, requests
 from knowledge.pack_loader import load_pack
 
 # Synthetic demo patient. Edit freely — only the persona is invented; the
@@ -10,7 +9,9 @@ PERSONA = (
     "gut is okay and what to gently nudge. SYNTHETIC demo patient."
 )
 
-MODEL = os.environ.get("REPORT_MODEL", "claude-opus-4-8")
+# Routed through OpenRouter (OpenAI-compatible API). Override with REPORT_MODEL.
+MODEL = os.environ.get("REPORT_MODEL", "anthropic/claude-opus-4.8")
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 
 def build_prompt(results, pack):
@@ -37,20 +38,31 @@ def main():
     results = json.load(open("data/results/results.json"))
     pack = load_pack()
     system = open("knowledge/rules.md").read()
-    client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    msg = client.messages.create(
-        model=MODEL,
-        max_tokens=4000,
-        system=system,
-        messages=[{"role": "user", "content": build_prompt(results, pack)}],
+    key = os.environ.get("OPENROUTER_API_KEY")
+    if not key:
+        raise SystemExit("OPENROUTER_API_KEY not set (add it to .env)")
+
+    resp = requests.post(
+        OPENROUTER_URL,
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        json={
+            "model": MODEL,
+            "max_tokens": 4000,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": build_prompt(results, pack)},
+            ],
+        },
+        timeout=180,
     )
-    text = msg.content[0].text.strip()
+    resp.raise_for_status()
+    text = resp.json()["choices"][0]["message"]["content"].strip()
     if text.startswith("```"):
         text = text.split("```", 2)[1].removeprefix("json").strip()
     report = json.loads(text)
     with open("data/results/report.json", "w") as fh:
         json.dump(report, fh, indent=2)
-    print(f"wrote report.json: {len(report['findings'])} findings")
+    print(f"wrote report.json via {MODEL}: {len(report['findings'])} findings")
 
 
 if __name__ == "__main__":
